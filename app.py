@@ -304,16 +304,15 @@ elif task == "Model Interpretability":
     if st.button("Compute Interactive SHAP"):
         with st.spinner("Computing SHAP values"):
             explainer = shap.TreeExplainer(rf)
-            shap_values = explainer.shap_values(X_test[:300])
+            shap_values = explainer.shap_values(X_test[:200])
             shap_importance = np.abs(shap_values).mean(axis=0)
             shap_df = pd.DataFrame({"Feature": feature_cols, "Mean |SHAP|": shap_importance}).sort_values("Mean |SHAP|", ascending=True)
             fig_bar = px.bar(shap_df, x="Mean |SHAP|", y="Feature", orientation='h', color="Mean |SHAP|",
                              color_continuous_scale="viridis", title="Mean Absolute SHAP Values (Feature Importance)")
             st.plotly_chart(fig_bar, use_container_width=True)
             st.subheader("SHAP Beeswarm Plot (Top 300 samples)")
-            shap.initjs()
             fig, ax = plt.subplots(figsize=(8, 5))
-            shap.summary_plot(shap_values, X_test[:300], feature_names=feature_cols, plot_type="dot", show=False)
+            shap.summary_plot(shap_values, X_test[:200], feature_names=feature_cols, plot_type="dot", show=False)
             st.pyplot(fig)
 
     st.subheader("Partial Dependence Plots (RF)")
